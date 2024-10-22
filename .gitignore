@@ -1,0 +1,169 @@
+# Kotlin
+*.kt
+*.kts
+*.kts.kts
+
+# Gradle
+.gradle
+build/
+
+# Intellij
+.idea
+*.iml
+
+# Eclipse
+.classpath
+.project
+.settings
+
+# Mac
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# Logs
+*.log
+
+# Temp
+*.tmp
+*.swp
+*.bak
+*.cache
+
+# Build
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+*.tar.xz
+*.tar.bz2
+*.tar.lzma
+*.tar.lz
+*.tar
+*.tgz
+*.exe
+*.dll
+*.so
+*.dylib
+*.bin
+*.dat
+*.out
+*.o
+*.a
+*.lib
+*.apk
+*.ipa
+*.app
+*.dSYM
+*.xcodeproj
+*.xcworkspace
+*.xcuserstate
+*.xccheckout
+
+# Node
+node_modules/
+npm-debug.log
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+*.tar.xz
+*.tar.bz2
+*.tar.lzma
+*.tar.lz
+*.tar
+*.tgz
+*.exe
+*.dll
+*.so
+*.dylib
+*.bin
+*.dat
+*.out
+*.o
+*.a
+*.lib
+
+# Gradle
+.gradle
+build/
+
+# Intellij
+.idea
+*.iml
+
+# Eclipse
+.classpath
+.project
+.settings
+
+# Mac
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# Android
+*.apk
+*.ap_
+*.dex
+*.class
+*.dex
+*.jar
+*.aar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+*.tar.xz
+*.tar.bz2
+*.tar.lzma
+*.tar.lz
+*.tar
+*.tgz
+*.exe
+*.dll
+*.so
+*.dylib
+*.bin
+*.dat
+*.out
+*.o
+*.a
+*.lib
+*.dSYM
+*.xcodeproj
+*.xcworkspace
+*.xcuserstate
+*.xccheckout
+
+# Node
+node_modules/
+npm-debug.log
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.
