@@ -167,3 +167,4 @@ npm-debug.log
 *.war
 *.ear
 *.
+venv/

@@ -1,4 +1,6 @@
 from dataclasses import dataclass , field
+from tabulate import tabulate
+from termcolor import colored
 from Player import Player
 import logging
 import traceback
@@ -163,19 +165,43 @@ class Tourney:
     
     def display_leaderboard(self) -> None:
         sorted_players = sorted(self._players, key=lambda player: (player.score, player.opponentMatch1, player.opponentMatch2, player.opponentMatch3), reverse=True)
+    
+        # Prepare data for tabulate
+        table_data = []
         for player in sorted_players:
-            print(f"{player.name:<20} - {player.score:<2} - {player.roundsWon:<1} - {player.opponentMatch1:<3} - {player.opponentMatch2:<3} - {player.opponentMatch3:<3}")
+            table_data.append([
+                player.name[:15],  # Truncate name to 15 characters
+                player.score,
+                player.roundsWon,
+                player.opponentMatch2,
+                player.opponentMatch3
+            ])
+    
+
 
     def start_tourney(self) -> bool:
         self.scramble_tables()
         self._round += 1
         return True
     
-name = "Comedor de Casada123123"
-score = 3
-roundsWon = 1
-opponentMatch1 = 12
-opponentMatch2 = 32
-opponentMatch3 = 612
+table_data = []
+for _ in range(3):
+    table_data.append([
+        colored("TES123123123T"[:15],"yellow"),
+        colored("20","yellow"),
+        colored("10","yellow"),
+        colored("30","yellow"),
+        colored("200","yellow"),
+    ])
+table_data.append([
+    "asd"[:15],  # Truncate name to 15 characters
+    "20",
+    "10",
+    "30",
+    "200"
+])
+    # Define table headers
+headers = ["Name", "Score", "Rounds Won", "Opponent Match 2", "Opponent Match 3"]
 
-print(f"{name:>15} Points: {score:<2} Rounds Won: {roundsWon:<1} CDD1: {opponentMatch2:<3} CDD2: {opponentMatch3:<3}")
+# Print the table
+print(tabulate(table_data, headers=headers, tablefmt="pretty"))
