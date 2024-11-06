@@ -141,12 +141,41 @@ class Tourney:
             self._treat_byes()
         return True
     
+    def set_player_as_bye_by_name(self, name:str) -> bool:
+        player = self.getPlayerByName(name)
+        return self.set_player_as_bye(player)
     
-    def table_result(self, result_dict:dict[int, Player]) -> bool:
+    def set_player_as_bye(self, player:Player) -> bool:
+        player.isBye = True
+        player.isWasBye = True
+        for table in self._tables:
+            if player in table:
+                table.remove(player)
+                break
+        return True
+    
+    def swap_players(self, player1:Player, player2:Player) -> None:
+        if (player1.isDrop
+                or player2.isDrop
+                or player1 == player2
+                or len(self._tables) <= 0 
+                or player1 not in self._players 
+                or player2 not in self._players):
+            return False
+        for table in self._tables:
+            if player1 in table:
+                table.remove(player1)
+                table.append(player2)
+            if player2 in table:
+                table.remove(player2)
+                table.append(player1)
+        
+    
+    def table_result_by_dict(self, result_dict:dict[int, Player]) -> bool:
         for table, winner in result_dict.items():
-            self._table_result(table, winner)
+            self.table_result(table, winner)
 
-    def _table_result(self, table:int, winner:Player = None) -> bool:
+    def table_result(self, table:int, winner:Player = None) -> bool:
         players = self._tables[table]
         opponent_match2_list :list = [player.score for player in players]
         opponent_match3_list :list = [player.opponentMatch2 for player in players]
@@ -176,32 +205,8 @@ class Tourney:
                 player.opponentMatch2,
                 player.opponentMatch3
             ])
-    
-
 
     def start_tourney(self) -> bool:
         self.scramble_tables()
         self._round += 1
         return True
-    
-table_data = []
-for _ in range(3):
-    table_data.append([
-        colored("TES123123123T"[:15],"yellow"),
-        colored("20","yellow"),
-        colored("10","yellow"),
-        colored("30","yellow"),
-        colored("200","yellow"),
-    ])
-table_data.append([
-    "asd"[:15],  # Truncate name to 15 characters
-    "20",
-    "10",
-    "30",
-    "200"
-])
-    # Define table headers
-headers = ["Name", "Score", "Rounds Won", "Opponent Match 2", "Opponent Match 3"]
-
-# Print the table
-print(tabulate(table_data, headers=headers, tablefmt="pretty"))
