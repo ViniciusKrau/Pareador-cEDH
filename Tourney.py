@@ -109,12 +109,13 @@ class Tourney:
 
 
     def _scramble_rounds(self) -> None:
-        _bye_players = [player for player in self._players if player.isBye() or player.isWasBye()]
-        sorted_players = [player for player in sorted_players if not player.isBye() or player.isWasBye() or player.isDrop()]
+
+        #TODO:REDO
+        _bye_players = [player for player in self._players if player.isBye or player.isWasBye]
+        sorted_players = [player for player in sorted_players if not player.isBye or player.isWasBye or player.isDrop()]
         for player in _bye_players:
             sorted_players[-1].isBye = True
             sorted_players.pop()
-            player.isWasBye = True
             player.isBye = False
         sorted_players.extend(_bye_players)
         sorted_players = sorted(self._players, key=lambda player: (player.score, player.opponentMatch1, player.opponentMatch2, player.opponentMatch3))
@@ -122,11 +123,30 @@ class Tourney:
 
     def _treat_byes(self) -> None:
         last_table = self._tables[-1] if self._tables else []
-        if len(last_table) < 4:
-            for player in last_table:
+        players = [player for table in self._tables for player in table if player not in last_table]
+
+        if len(last_table) >= 4:
+            return
+        
+        # Swap already byed players with not byed players or give a bye to a player
+        for player in last_table:
+
+            if not player.isWasBye:
                 player.isBye = True
+                player.isWasBye = True
                 player.score += 3
-            self._tables.pop()
+                continue
+
+            for player2 in reversed(players):
+                if player2.isWasBye:
+                    continue
+                player2.isBye = True
+                player2.isWasBye = True
+                player2.score += 3
+                self.swap_players(player, player2)
+                break
+
+                
 
     def _scramble_tables(self) -> bool:
 
@@ -161,14 +181,15 @@ class Tourney:
                 or len(self._tables) <= 0 
                 or player1 not in self._players 
                 or player2 not in self._players):
-            return False
+            return
+        
         for table in self._tables:
             if player1 in table:
-                table.remove(player1)
-                table.append(player2)
+                index = table.index(player1)
+                table[index] = player2
             if player2 in table:
-                table.remove(player2)
-                table.append(player1)
+                index = table.index(player2)
+                table[index] = player1
         
     
     def table_result_by_dict(self, result_dict:dict[int, Player]) -> bool:
