@@ -103,27 +103,19 @@ class Tourney:
     
     
     def _scramble_round_0(self) -> None:
-        shuffled_players = [player for player in self.players if not player.isDrop()]
+        shuffled_players = [player for player in self._players if not player.isDrop()]
         random.shuffle(shuffled_players)
         self._tables = [shuffled_players[i:i + 4] for i in range(0, len(shuffled_players), 4)]
 
 
     def _scramble_rounds(self) -> None:
-
-        #TODO:REDO
-        _bye_players = [player for player in self._players if player.isBye or player.isWasBye]
-        sorted_players = [player for player in sorted_players if not player.isBye or player.isWasBye or player.isDrop()]
-        for player in _bye_players:
-            sorted_players[-1].isBye = True
-            sorted_players.pop()
-            player.isBye = False
-        sorted_players.extend(_bye_players)
-        sorted_players = sorted(self._players, key=lambda player: (player.score, player.opponentMatch1, player.opponentMatch2, player.opponentMatch3))
+        noDropPlayers = [player for player in sorted_players if not player.isDrop()]
+        sorted_players = sorted(noDropPlayers, key=lambda player: (player.score, player.roundswon, player.opponentMatch2, player.opponentMatch3))
         self._tables = [sorted_players[i:i + 4] for i in range(0, len(sorted_players), 4)]
 
     def _treat_byes(self) -> None:
         last_table = self._tables[-1] if self._tables else []
-        players = [player for table in self._tables for player in table if player not in last_table]
+        players_not_in_last_table = [player for table in self._tables for player in table if player not in last_table]
 
         if len(last_table) >= 4:
             return
@@ -137,7 +129,7 @@ class Tourney:
                 player.score += 3
                 continue
 
-            for player2 in reversed(players):
+            for player2 in reversed(players_not_in_last_table):
                 if player2.isWasBye:
                     continue
                 player2.isBye = True
@@ -161,9 +153,11 @@ class Tourney:
             self._treat_byes()
         return True
     
+    
     def set_player_as_bye_by_name(self, name:str) -> bool:
         player = self.getPlayerByName(name)
         return self.set_player_as_bye(player)
+    
     
     def set_player_as_bye(self, player:Player) -> bool:
         player.isBye = True
@@ -173,6 +167,7 @@ class Tourney:
                 table.remove(player)
                 break
         return True
+    
     
     def swap_players(self, player1:Player, player2:Player) -> None:
         if (player1.isDrop
@@ -196,6 +191,7 @@ class Tourney:
         for table, winner in result_dict.items():
             self.table_result(table, winner)
 
+
     def table_result(self, table:int, winner:Player = None) -> bool:
         players = self._tables[table]
         opponent_match2_list :list = [player.score for player in players]
@@ -213,8 +209,9 @@ class Tourney:
                 player.score += 1
         return True
     
+    
     def display_leaderboard(self) -> None:
-        sorted_players = sorted(self._players, key=lambda player: (player.score, player.opponentMatch1, player.opponentMatch2, player.opponentMatch3), reverse=True)
+        sorted_players = sorted(self._players, key=lambda player: (player.score, player.roundsWon, player.opponentMatch2, player.opponentMatch3), reverse=True)
     
         # Prepare data for tabulate
         table_data = []
@@ -226,6 +223,7 @@ class Tourney:
                 player.opponentMatch2,
                 player.opponentMatch3
             ])
+            
 
     def start_tourney(self) -> bool:
         self.scramble_tables()

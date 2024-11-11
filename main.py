@@ -1,4 +1,5 @@
 import Player as pl
+import Tourney as tr
 
 def main():
     pass

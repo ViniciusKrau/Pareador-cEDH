@@ -17,7 +17,7 @@ class Player:
     @property
     def name(self) -> str:
         return self._name
-    
+
     @name.setter
     def name(self, value) -> None:
         self._name = value
@@ -25,15 +25,15 @@ class Player:
     @property
     def score(self) -> int:
         return self._score
-    
+
     @score.setter
     def score(self, value) -> None:
         self._score = value
-    
+
     @property
     def roundsWon(self) -> float:
         return self._rounds_won
-    
+
     @roundsWon.setter
     def roundsWon(self, value) -> None:
         self._rounds_won = value
