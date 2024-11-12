@@ -217,13 +217,19 @@ class Tourney:
         table_data = []
         for player in sorted_players:
             table_data.append([
-                player.name[:15],  # Truncate name to 15 characters
-                player.score,
-                player.roundsWon,
-                player.opponentMatch2,
-                player.opponentMatch3
+            player.name[:15],  # Truncate name to 15 characters
+            player.score,
+            player.roundsWon,
+            player.opponentMatch2,
+            player.opponentMatch3
             ])
-            
+        
+        # Define table headers
+        headers = ["Name", "Score", "Rounds Won", "Opponent Match 2", "Opponent Match 3"]
+        
+        # Print the leaderboard using tabulate
+        print(tabulate(table_data, headers=headers, tablefmt="grid"))
+
 
     def start_tourney(self) -> bool:
         self.scramble_tables()
