@@ -77,3 +77,6 @@ class Player:
     @isWasBye.setter
     def isWasBye(self, value) -> None:
         self._is_was_bye = value
+
+    def __str__(self) -> str:
+        return self._name

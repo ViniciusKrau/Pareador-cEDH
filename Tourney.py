@@ -45,7 +45,7 @@ class Tourney:
     @property
     def byeRule(self) -> bool:
         return self._bye_rule
-    
+
     @byeRule.setter
     def byeRule(self, value:bool) -> None:
         self._bye_rule = value
@@ -53,22 +53,28 @@ class Tourney:
     @property
     def droppedPlayers(self) -> list:
         return self._dropped_players
-    
+
     @droppedPlayers.setter
     def droppedPlayers(self, value:list) -> None:
         self._dropped_players = value
+
 
     def getPlayerByName (self, name:str) -> Player:
         for player in self._players:
             if player.name == name:
                 return player
 
+
     def addPlayers(self, players:str) -> None:
         new_players = players.split('\n')
         for player in new_players:
+            player = player.strip()
+            if player == "":
+                continue
             player = Player(player)
             self._players.append(player)
-        logger.info(f"Players added: {new_players}")
+            logger.info(f"Player added: {player.name}")
+
 
     def removePlayer(self, name:str) -> bool:
         for player in self._players:
@@ -80,9 +86,11 @@ class Tourney:
         logger.info(f"Player removal failed: {name}")
         return False
     
+
     def dropPlayerByName(self, name:str) -> bool:
         self.dropPlayer(self.getPlayerByName(name))
     
+
     def dropPlayer(self, player:Player) -> bool:
         try:
             player.isDrop = True
@@ -93,12 +101,13 @@ class Tourney:
         logger.info(f"Player dropped: {Player.name}")
         return True
     
+
     def populateTables(self) -> bool:
         if len(self._players) > 4:
             self._tables = [self._players[i:i + 4] for i in range(0, len(self._players), 4)]
             return True
         else:
-            self._tables.appent(self._players)
+            self._tables.append(self._players)
         return False
     
     
@@ -112,6 +121,7 @@ class Tourney:
         noDropPlayers = [player for player in sorted_players if not player.isDrop()]
         sorted_players = sorted(noDropPlayers, key=lambda player: (player.score, player.roundswon, player.opponentMatch2, player.opponentMatch3))
         self._tables = [sorted_players[i:i + 4] for i in range(0, len(sorted_players), 4)]
+
 
     def _treat_byes(self) -> None:
         last_table = self._tables[-1] if self._tables else []
@@ -138,7 +148,6 @@ class Tourney:
                 self.swap_players(player, player2)
                 break
 
-                
 
     def _scramble_tables(self) -> bool:
 
@@ -230,6 +239,13 @@ class Tourney:
         # Print the leaderboard using tabulate
         print(tabulate(table_data, headers=headers, tablefmt="grid"))
 
+    def display_tables(self) -> None:
+        for idx, table in enumerate(self._tables):
+            color = "green" if idx % 2 == 0 else "yellow"
+            print("")
+            print(colored(f"Table {idx + 1}, Index {idx}" ,color))
+            for player in table:
+                print(colored(f"{player.name}", color))
 
     def start_tourney(self) -> bool:
         self.scramble_tables()
