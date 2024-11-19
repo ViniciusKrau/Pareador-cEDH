@@ -16,7 +16,7 @@ class Tourney:
     _round: int = field(default=0)
     _tables: list = field(default_factory=list)
     _dropped_players: list = field(default_factory=list)
-    _bye_rule: bool = field(default=False)
+    _bye_rule: bool = field(default=True)
     
     @property
     def players(self) -> list:
@@ -73,7 +73,7 @@ class Tourney:
                 continue
             player = Player(player)
             self._players.append(player)
-            logger.info(f"Player added: {player.name}")
+            #logger.info(f"Player added: {player.name}")
 
 
     def removePlayer(self, name:str) -> bool:
@@ -81,9 +81,9 @@ class Tourney:
             if player.name == name:
                 self._player.remove(player)
                 del player
-                logger.info(f"Player removed: {name}")
+                #logger.info(f"Player removed: {name}")
                 return True
-        logger.info(f"Player removal failed: {name}")
+        #logger.info(f"Player removal failed: {name}")
         return False
     
 
@@ -98,7 +98,7 @@ class Tourney:
         except Exception:
             traceback.print_exc()
             return False
-        logger.info(f"Player dropped: {Player.name}")
+        #logger.info(f"Player dropped: {Player.name}")
         return True
     
 
@@ -110,35 +110,36 @@ class Tourney:
             self._tables.append(self._players)
         return False
     
+    def next_round(self):
+        if self._tables == None:
+            self.populateTables()
+        self._scramble_tables()
+        self._round += 1
+    
     
     def _scramble_round_0(self) -> None:
-        shuffled_players = [player for player in self._players if not player.isDrop()]
+        shuffled_players = [player for player in self._players if not player.isDrop]
         random.shuffle(shuffled_players)
         self._tables = [shuffled_players[i:i + 4] for i in range(0, len(shuffled_players), 4)]
 
 
     def _scramble_rounds(self) -> None:
-        noDropPlayers = [player for player in sorted_players if not player.isDrop()]
-        sorted_players = sorted(noDropPlayers, key=lambda player: (player.score, player.roundswon, player.opponentMatch2, player.opponentMatch3))
+        noDropPlayers = [player for player in self._players if not player.isDrop]
+        sorted_players = sorted(noDropPlayers, key=lambda player: (player.score, player.roundsWon, player.opponentMatch2, player.opponentMatch3))
         self._tables = [sorted_players[i:i + 4] for i in range(0, len(sorted_players), 4)]
 
 
     def _treat_byes(self) -> None:
         last_table = self._tables[-1] if self._tables else []
         players_not_in_last_table = [player for table in self._tables for player in table if player not in last_table]
-
         if len(last_table) >= 4:
             return
-        
-        # Swap already byed players with not byed players or give a bye to a player
         for player in last_table:
-
             if not player.isWasBye:
                 player.isBye = True
                 player.isWasBye = True
                 player.score += 3
                 continue
-
             for player2 in reversed(players_not_in_last_table):
                 if player2.isWasBye:
                     continue
@@ -148,16 +149,11 @@ class Tourney:
                 self.swap_players(player, player2)
                 break
 
-
     def _scramble_tables(self) -> bool:
-
         if self._round == 0:
             self._scramble_round_0()
-
         if self._round > 0:
             self._scramble_rounds()
-            
-
         if self._bye_rule:
             self._treat_byes()
         return True
@@ -196,8 +192,9 @@ class Tourney:
                 table[index] = player1
         
     
-    def table_result_by_dict(self, result_dict:dict[int, Player]) -> bool:
+    def table_result_by_dict(self, result_dict:dict[int, str]) -> bool:
         for table, winner in result_dict.items():
+            winner = self.getPlayerByName(winner)
             self.table_result(table, winner)
 
 
@@ -245,9 +242,4 @@ class Tourney:
             print("")
             print(colored(f"Table {idx + 1}, Index {idx}" ,color))
             for player in table:
-                print(colored(f"{player.name}", color))
-
-    def start_tourney(self) -> bool:
-        self.scramble_tables()
-        self._round += 1
-        return True
+                print(colored(f"{player.name} {player.score}", color))
